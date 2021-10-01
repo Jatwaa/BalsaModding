@@ -1,0 +1,50 @@
+
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+
+namespace JDSATorqueModule
+{
+    public class GyroAddForce : MonoBehaviour
+    {
+        // Start is called before the first frame update
+        public float rotTorque;
+        public Rigidbody rb;
+        public Quaternion StartQuarternion;
+        public Vector3 axis;
+
+
+        void Start()
+        {
+            rb = GetComponent<Rigidbody>();
+            StartQuarternion = transform.rotation;
+            Debug.Log("Starting JDSA Torque Systems");
+        }
+
+        void FixedUpdate()
+        {
+            if (Input.GetKey (KeyCode.W))
+            {
+                transform.Rotate(Vector3.up * rotTorque);
+            }
+            if (Input.GetKey(KeyCode.S))
+            {
+                transform.Rotate(Vector3.down * rotTorque);
+            }
+            if (Input.GetKey(KeyCode.Q))
+            {
+                transform.Rotate(Vector3.left * rotTorque);
+            }
+            if (Input.GetKey(KeyCode.E))
+            {
+                transform.Rotate(Vector3.right * rotTorque);
+            }
+        }
+
+        public static void Log(string text)
+        {
+            Debug.Log($"{Time.realtimeSinceStartup} [GyroTorquer] {text}");
+        }
+    }
+}
