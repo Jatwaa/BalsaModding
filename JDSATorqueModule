@@ -1,11 +1,13 @@
+using BalsaCore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using BalsaCore;
+using Modules;
+
 
 namespace JDSATorqueModule
 {
-    public class GyroAddForce : MonoBehaviour
+    public class GyroAddForce : MonoBehaviour, PartModule, IPart
     {
 
         public float rotTorque;
@@ -17,7 +19,8 @@ namespace JDSATorqueModule
         float angle;
         string StartUpString = "Starting JDSA Torque Systems";
 
-        void Start()
+
+        public override void OnModuleSpawn()
         {
             rb = GetComponent<Rigidbody>();
             StartQuarternion = transform.rotation;
@@ -25,7 +28,7 @@ namespace JDSATorqueModule
             Debug.Log($"{Time.realtimeSinceStartup} [GyroTorquer] {text}");
         }
 
-        void FixedUpdate()
+        protected void FixedUpdate()
         {
             if (vert > 0)
             {
