@@ -2,34 +2,56 @@ using BalsaCore;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Modules;
-
+using UnityEditor;
+using BalsaAddons.Modules;
+using CfgFields;
 
 namespace JDSATorqueModule
 {
-    public class GyroAddForce : MonoBehaviour, PartModule, IPart
-    {
+    public class JDSATorqueModule : PartModule
 
-        public float rotTorque;
+    {
+        [SerializeField]
+        [CfgField(CfgContext.Config, null, false, null)]
+        public float rotTorque = 1000;
+        [SerializeField]
+        [CfgField(CfgContext.Config, null, false, null)]
+        public Vector3 axis;
+        [SerializeField]
+        [CfgField(CfgContext.Config, null, false, null)]
+        public float dampenFactor = 0.8f;
+        [SerializeField]
+        [CfgField(CfgContext.Config, null, false, null)]
+        public float adjustFactor = 1000f;
+        [SerializeField]
+        [CfgField(CfgContext.Config, null, false, null)]
+        public float angle;
+        [SerializeField]
+        [CfgField(CfgContext.Config, null, false, null)]
+        public string StartUpString = "Starting JDSA Torque Systems";
+        [SerializeField]
+        [CfgField(CfgContext.Config, null, false, null)]
         public Rigidbody rb;
         public Quaternion StartQuarternion;
-        public Vector3 axis;
-        public float dampenFactor = 0.8f;
-        public float adjustFactor = 1000f;
-        float angle;
-        string StartUpString = "Starting JDSA Torque Systems";
+
+        protected override string GetModuleName() => "JDSATorqueModule.JDSATorqueModule";
 
 
-        public override void OnModuleSpawn()
+        public void OnModuleSpawn()
         {
             rb = GetComponent<Rigidbody>();
             StartQuarternion = transform.rotation;
             Debug.Log(StartUpString);
-            Debug.Log($"{Time.realtimeSinceStartup} [GyroTorquer] {text}");
+            //Debug.Log($"{Time.realtimeSinceStartup} [GyroTorquer] {text}");
         }
 
         protected void FixedUpdate()
         {
+
+            float vert = InputSettings.Axis_Pitch.GetAxis();
+            float horiz = InputSettings.Axis_Roll.GetAxis();
+            float yawAx = InputSettings.Axis_Yaw.GetAxis();
+
             if (vert > 0)
             {
                 transform.rotation = Quaternion.AngleAxis(rotTorque, Vector3.up);
@@ -47,8 +69,7 @@ namespace JDSATorqueModule
             {
                 transform.rotation = Quaternion.AngleAxis(rotTorque, Vector3.right);
             }
-            float vert = Input.GetAxis("Vertical");
-            float horiz = Input.GetAxis("Horizontal");
+
 
             Quaternion deltaQuat = Quaternion.FromToRotation(rb.transform.up, Vector3.up);
             deltaQuat.ToAngleAxis(out angle, out axis);
